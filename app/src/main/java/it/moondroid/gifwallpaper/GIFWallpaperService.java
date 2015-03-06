@@ -20,12 +20,12 @@ public class GIFWallpaperService extends WallpaperService {
             // To use the animated GIF, you first have to convert it into a Movie object.
             // You can use the Movie class's decodeStream method to do so
             Movie movie = Movie.decodeStream(
-                    getResources().getAssets().open("AndroidParticles.gif"));
+                    getResources().getAssets().open("Dark-Theme-Phone.gif"));
             // Once the Movie object has been created,
             // pass it as a parameter to the constructor of the custom Engine
             return new GIFWallpaperEngine(movie);
 
-        }catch(IOException e){
+        } catch (IOException e) {
             Log.d("GIF", "Could not load asset");
             return null;
         }
@@ -45,6 +45,9 @@ public class GIFWallpaperService extends WallpaperService {
         private Movie movie;
         private Handler handler;
 
+        private float xScale;
+        private float yScale;
+
         public GIFWallpaperEngine(Movie movie) {
             this.movie = movie;
             handler = new Handler();
@@ -54,12 +57,24 @@ public class GIFWallpaperService extends WallpaperService {
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
             this.holder = surfaceHolder;
+
+
+        }
+
+        @Override
+        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            super.onSurfaceChanged(holder, format, width, height);
+            xScale = width / movie.width();
+            yScale = height / movie.height();
+            Log.d("GIFWallpaperEngine", "xScale " + xScale);
+            Log.d("GIFWallpaperEngine", "yScale " + yScale);
         }
 
         @Override
         public void onVisibilityChanged(boolean visible) {
             this.visible = visible;
             if (visible) {
+
                 handler.post(drawGIF);
             } else {
                 handler.removeCallbacks(drawGIF);
@@ -84,11 +99,11 @@ public class GIFWallpaperService extends WallpaperService {
                 canvas.save();
                 // Adjust size and position so that
                 // the image looks good on your screen
-                canvas.scale(3f, 3f);
+                canvas.scale(xScale, yScale);
                 movie.draw(canvas, 0, 0);
                 canvas.restore();
                 holder.unlockCanvasAndPost(canvas);
-                if (movie.duration() > 0){
+                if (movie.duration() > 0) {
                     movie.setTime((int) (System.currentTimeMillis() % movie.duration()));
                 }
 
@@ -96,5 +111,6 @@ public class GIFWallpaperService extends WallpaperService {
                 handler.postDelayed(drawGIF, frameDuration);
             }
         }
+
     }
 }
