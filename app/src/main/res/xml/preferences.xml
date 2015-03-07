@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:dialogTitle="@string/title_frames_per_second"
+        android:entries="@array/entries_frames_per_second"
+        android:entryValues="@array/entryvalues_frames_per_second"
+        android:defaultValue="30"
+        android:key="frames_per_second"
+        android:summary="@string/summary_frames_per_second"
+        android:title="@string/title_frames_per_second" />
+
+    <ListPreference
+        android:dialogTitle="@string/title_scale_type"
+        android:entries="@array/entries_scale_type"
+        android:entryValues="@array/entryvalues_scale_type"
+        android:defaultValue="CENTER_CROP"
+        android:key="scale_type"
+        android:summary="@string/summary_scale_type"
+        android:title="@string/title_scale_type" />
+
+</PreferenceScreen>

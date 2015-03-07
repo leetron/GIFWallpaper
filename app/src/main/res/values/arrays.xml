@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_frames_per_second">
+        <item>10</item>
+        <item>30 (Recommended, Default)</item>
+        <item>60</item>
+    </string-array>
+
+    <string-array name="entryvalues_frames_per_second">
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
+    </string-array>
+
+    <string-array name="entries_scale_type">
+        <item>Center Crop (Default)</item>
+        <item>Center</item>
+        <item>Center Inside</item>
+        <item>Fit XY</item>
+    </string-array>
+    <string-array name="entryvalues_scale_type">
+        <item>CENTER_CROP</item>
+        <item>CENTER</item>
+        <item>CENTER_INSIDE</item>
+        <item>FIT_XY</item>
+    </string-array>
+</resources>

@@ -21,6 +21,7 @@ import it.moondroid.gifwallpaper.scaling.ScaleStrategy;
  */
 public class GIFWallpaperService extends WallpaperService {
 
+    public static final String SHARED_PREFS_NAME = "it.moondroid.gifwallpaper.Preferences";
     private static final String TAG = GIFWallpaperService.class.getName();
 
     @Override

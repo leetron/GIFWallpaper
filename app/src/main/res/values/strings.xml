@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">GIFWallpaper</string>
+    <string name="title_activity_wallpaper_preference">GIF Wallpaper Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_frames_per_second">Frames per second</string>
+    <string name="summary_frames_per_second">Higher frames per second gives a smoother experience but may use up more battery.</string>
+    <string name="title_scale_type">Scale Type</string>
+    <string name="summary_scale_type">How the GIF image is scaled to the bounds of device screen</string>
 </resources>
