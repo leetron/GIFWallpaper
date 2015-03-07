@@ -14,6 +14,8 @@ import java.io.IOException;
  */
 public class GIFWallpaperService extends WallpaperService {
 
+    private static final String TAG = GIFWallpaperService.class.getName();
+
     @Override
     public Engine onCreateEngine() {
         try {
@@ -26,7 +28,7 @@ public class GIFWallpaperService extends WallpaperService {
             return new GIFWallpaperEngine(movie);
 
         } catch (IOException e) {
-            Log.d("GIF", "Could not load asset");
+            Log.d(TAG, "Could not load asset");
             return null;
         }
     }
@@ -66,8 +68,8 @@ public class GIFWallpaperService extends WallpaperService {
             super.onSurfaceChanged(holder, format, width, height);
             xScale = width / movie.width();
             yScale = height / movie.height();
-            Log.d("GIFWallpaperEngine", "xScale " + xScale);
-            Log.d("GIFWallpaperEngine", "yScale " + yScale);
+            Log.d(TAG, "xScale " + xScale);
+            Log.d(TAG, "yScale " + yScale);
         }
 
         @Override
