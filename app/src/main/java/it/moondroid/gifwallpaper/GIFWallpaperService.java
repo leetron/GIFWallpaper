@@ -2,12 +2,19 @@ package it.moondroid.gifwallpaper;
 
 import android.graphics.Canvas;
 import android.graphics.Movie;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
+
+import it.moondroid.gifwallpaper.scaling.CenterCropScaleStrategy;
+import it.moondroid.gifwallpaper.scaling.CenterInsideScaleStrategy;
+import it.moondroid.gifwallpaper.scaling.CenterScaleStrategy;
+import it.moondroid.gifwallpaper.scaling.FitXYScaleStrategy;
+import it.moondroid.gifwallpaper.scaling.ScaleStrategy;
 
 /**
  * Created by Marco on 05/03/2015.
@@ -22,7 +29,7 @@ public class GIFWallpaperService extends WallpaperService {
             // To use the animated GIF, you first have to convert it into a Movie object.
             // You can use the Movie class's decodeStream method to do so
             Movie movie = Movie.decodeStream(
-                    getResources().getAssets().open("Dark-Theme-Phone.gif"));
+                    getResources().getAssets().open("bootanim-circle.gif"));
             // Once the Movie object has been created,
             // pass it as a parameter to the constructor of the custom Engine
             return new GIFWallpaperEngine(movie);
@@ -49,6 +56,8 @@ public class GIFWallpaperService extends WallpaperService {
 
         private float xScale;
         private float yScale;
+        private float xTranslation;
+        private float yTranslation;
 
         public GIFWallpaperEngine(Movie movie) {
             this.movie = movie;
@@ -66,10 +75,18 @@ public class GIFWallpaperService extends WallpaperService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
-            xScale = width / movie.width();
-            yScale = height / movie.height();
+
+            ScaleStrategy scaleStrategy = new CenterInsideScaleStrategy(movie, width, height);
+            xScale = scaleStrategy.getXScale();
+            yScale = scaleStrategy.getYScale();
+            xTranslation = scaleStrategy.getXTranslation();
+            yTranslation = scaleStrategy.getYTranslation();
+
+            Log.d(TAG, "width " + width + " height "+ height);
             Log.d(TAG, "xScale " + xScale);
             Log.d(TAG, "yScale " + yScale);
+            Log.d(TAG, "xTranslation " + xTranslation);
+            Log.d(TAG, "yTranslation " + yTranslation);
         }
 
         @Override
@@ -102,7 +119,8 @@ public class GIFWallpaperService extends WallpaperService {
                 // Adjust size and position so that
                 // the image looks good on your screen
                 canvas.scale(xScale, yScale);
-                movie.draw(canvas, 0, 0);
+                movie.draw(canvas, xTranslation, yTranslation);
+
                 canvas.restore();
                 holder.unlockCanvasAndPost(canvas);
                 if (movie.duration() > 0) {
