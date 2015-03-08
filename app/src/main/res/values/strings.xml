@@ -8,4 +8,9 @@
     <string name="summary_frames_per_second">Higher frames per second gives a smoother experience but may use up more battery.</string>
     <string name="title_scale_type">Scale Type</string>
     <string name="summary_scale_type">How the GIF image is scaled to the bounds of device screen</string>
+
+
+    <string name="preference_key_frames_per_second">frames_per_second</string>
+    <string name="preference_key_scale_type">scale_type</string>
+
 </resources>

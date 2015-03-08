@@ -1,9 +1,11 @@
 package it.moondroid.gifwallpaper;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -41,11 +43,12 @@ public class GIFWallpaperService extends WallpaperService {
         }
     }
 
-    private class GIFWallpaperEngine extends WallpaperService.Engine {
+    private class GIFWallpaperEngine extends Engine
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         // This integer represents the delay between re-draw operations.
         // A value of 20 gives you 50 frames per second.
-        private final int frameDuration = 20;
+        private int frameDuration;
 
         // This boolean lets the engine know if the live wallpaper is currently visible on the screen.
         // This is important, because we should not be drawing the wallpaper when it isn't visible.
@@ -63,6 +66,11 @@ public class GIFWallpaperService extends WallpaperService {
         public GIFWallpaperEngine(Movie movie) {
             this.movie = movie;
             handler = new Handler();
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            sharedPref.registerOnSharedPreferenceChangeListener(this);
+
+            onSharedPreferenceChanged(sharedPref, null);
         }
 
         @Override
@@ -133,5 +141,13 @@ public class GIFWallpaperService extends WallpaperService {
             }
         }
 
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            int framesPerSecond = Integer.parseInt(sharedPreferences.getString(getResources()
+                    .getString(R.string.preference_key_frames_per_second), "30"));
+            frameDuration = (int) ((1.0f / framesPerSecond) * 1000);
+
+        }
     }
 }

@@ -6,7 +6,7 @@
         android:entries="@array/entries_frames_per_second"
         android:entryValues="@array/entryvalues_frames_per_second"
         android:defaultValue="30"
-        android:key="frames_per_second"
+        android:key="@string/preference_key_frames_per_second"
         android:summary="@string/summary_frames_per_second"
         android:title="@string/title_frames_per_second" />
 
@@ -15,7 +15,7 @@
         android:entries="@array/entries_scale_type"
         android:entryValues="@array/entryvalues_scale_type"
         android:defaultValue="CENTER_CROP"
-        android:key="scale_type"
+        android:key="@string/preference_key_scale_type"
         android:summary="@string/summary_scale_type"
         android:title="@string/title_scale_type" />
 
