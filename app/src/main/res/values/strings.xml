@@ -12,5 +12,6 @@
 
     <string name="preference_key_frames_per_second">frames_per_second</string>
     <string name="preference_key_scale_type">scale_type</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
