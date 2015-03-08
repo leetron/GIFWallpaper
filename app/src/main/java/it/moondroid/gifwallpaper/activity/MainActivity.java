@@ -1,7 +1,10 @@
 package it.moondroid.gifwallpaper.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,8 @@ import com.felipecsl.gifimageview.library.GifImageView;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -62,7 +67,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             Log.d(TAG, "GIF width is " + gifImageView.getGifWidth());
             Log.d(TAG, "GIF height is " + gifImageView.getGifHeight());
         } catch (IOException e) {
-            Log.d(TAG, "Could not load asset");
+            Log.w(TAG, "Could not load asset");
         }
 //        new GifDataDownloader() {
 //            @Override
@@ -73,6 +78,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 //                Log.d(TAG, "GIF height is " + gifImageView.getGifHeight());
 //            }
 //        }.execute("http://gifs.joelglovier.com/aha/aha.gif");
+
+        handleSendImage();
     }
 
 
@@ -115,4 +122,27 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 
+    private void handleSendImage() {
+        // Get intent, action and MIME type
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_VIEW.equals(action) && type != null) {
+
+            String filePath = getIntent().getData().getPath();
+            Log.d(TAG, "filePath: "+filePath);
+            try {
+                FileInputStream iStream =  new FileInputStream(filePath);
+                byte[] bytes = IOUtils.toByteArray(iStream);
+                gifImageView.setBytes(bytes);
+                gifImageView.startAnimation();
+
+
+            } catch (FileNotFoundException e) {
+                Log.w(TAG, "Could not find file");
+            } catch (IOException e) {
+                Log.w(TAG, "Could not load file");
+            }
+        }
+    }
 }
