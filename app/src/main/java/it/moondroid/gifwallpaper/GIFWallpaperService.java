@@ -2,6 +2,7 @@ package it.moondroid.gifwallpaper;
 
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Movie;
 import android.graphics.Paint;
 import android.os.Handler;
@@ -58,16 +59,20 @@ public class GIFWallpaperService extends WallpaperService {
         private Movie movie;
         private Handler handler;
 
+        private ScaleStrategy scaleStrategy;
+        private int width, height;
         private float xScale;
         private float yScale;
         private float xTranslation;
         private float yTranslation;
 
+        private SharedPreferences sharedPref;
+
         public GIFWallpaperEngine(Movie movie) {
             this.movie = movie;
             handler = new Handler();
 
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             sharedPref.registerOnSharedPreferenceChangeListener(this);
 
             onSharedPreferenceChanged(sharedPref, null);
@@ -78,41 +83,38 @@ public class GIFWallpaperService extends WallpaperService {
             super.onCreate(surfaceHolder);
             this.holder = surfaceHolder;
 
-
         }
 
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
 
-            ScaleStrategy scaleStrategy = new CenterInsideScaleStrategy(movie, width, height);
-            xScale = scaleStrategy.getXScale();
-            yScale = scaleStrategy.getYScale();
-            xTranslation = scaleStrategy.getXTranslation();
-            yTranslation = scaleStrategy.getYTranslation();
+            this.width = width;
+            this.height = height;
 
-            Log.d(TAG, "width " + width + " height "+ height);
-            Log.d(TAG, "xScale " + xScale);
-            Log.d(TAG, "yScale " + yScale);
-            Log.d(TAG, "xTranslation " + xTranslation);
-            Log.d(TAG, "yTranslation " + yTranslation);
+            setScalingParameters();
         }
 
         @Override
         public void onVisibilityChanged(boolean visible) {
+
+            onSharedPreferenceChanged(sharedPref, null);
+            setScalingParameters();
+
             this.visible = visible;
             if (visible) {
-
                 handler.post(drawGIF);
             } else {
                 handler.removeCallbacks(drawGIF);
             }
+
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
             handler.removeCallbacks(drawGIF);
+            sharedPref.unregisterOnSharedPreferenceChangeListener(this);
         }
 
         private Runnable drawGIF = new Runnable() {
@@ -124,6 +126,7 @@ public class GIFWallpaperService extends WallpaperService {
         private void draw() {
             if (visible) {
                 Canvas canvas = holder.lockCanvas();
+                canvas.drawColor(Color.BLACK);
                 canvas.save();
                 // Adjust size and position so that
                 // the image looks good on your screen
@@ -148,6 +151,42 @@ public class GIFWallpaperService extends WallpaperService {
                     .getString(R.string.preference_key_frames_per_second), "30"));
             frameDuration = (int) ((1.0f / framesPerSecond) * 1000);
 
+            String scaleType = sharedPreferences.getString(getResources()
+                .getString(R.string.preference_key_scale_type), "CENTER_CROP");
+            scaleStrategy = getScaleStrategy(scaleType);
+        }
+
+
+        private ScaleStrategy getScaleStrategy(String scaleType){
+            if(scaleType.equalsIgnoreCase("CENTER_CROP")){
+                return new CenterCropScaleStrategy(movie);
+            }
+            if(scaleType.equalsIgnoreCase("CENTER_INSIDE")){
+                return new CenterInsideScaleStrategy(movie);
+            }
+            if(scaleType.equalsIgnoreCase("FIT_XY")){
+                return new FitXYScaleStrategy(movie);
+            }
+            if(scaleType.equalsIgnoreCase("CENTER")){
+                return new CenterScaleStrategy(movie);
+            }
+
+            return new CenterCropScaleStrategy(movie);
+        }
+
+        private void setScalingParameters(){
+            scaleStrategy.setWidth(width);
+            scaleStrategy.setHeight(height);
+            xScale = scaleStrategy.getXScale();
+            yScale = scaleStrategy.getYScale();
+            xTranslation = scaleStrategy.getXTranslation();
+            yTranslation = scaleStrategy.getYTranslation();
+
+            Log.d(TAG, "width " + width + " height "+ height);
+            Log.d(TAG, "xScale " + xScale);
+            Log.d(TAG, "yScale " + yScale);
+            Log.d(TAG, "xTranslation " + xTranslation);
+            Log.d(TAG, "yTranslation " + yTranslation);
         }
     }
 }

@@ -13,6 +13,10 @@ public class FitXYScaleStrategy extends AbstractScaleStrategy {
         super(movie, width, height);
     }
 
+    public FitXYScaleStrategy(Movie movie) {
+        super(movie);
+    }
+
     @Override
     public float getXScale() {
         return ((float)width) / movie.width();

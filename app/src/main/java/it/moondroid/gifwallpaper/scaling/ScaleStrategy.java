@@ -10,4 +10,7 @@ public interface ScaleStrategy {
 
     public float getXTranslation();
     public float getYTranslation();
+
+    public void setWidth(int width);
+    public void setHeight(int height);
 }

@@ -13,6 +13,10 @@ public class CenterScaleStrategy extends AbstractScaleStrategy {
         super(movie, width, height);
     }
 
+    public CenterScaleStrategy(Movie movie) {
+        super(movie);
+    }
+
     @Override
     public float getXScale() {
         return 1.0f;

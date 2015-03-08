@@ -1,6 +1,7 @@
 package it.moondroid.gifwallpaper.scaling;
 
 import android.graphics.Movie;
+import android.util.Log;
 
 /**
  * Created by Marco on 07/03/2015.
@@ -11,12 +12,36 @@ import android.graphics.Movie;
 public class CenterInsideScaleStrategy extends AbstractScaleStrategy {
 
     float scale;
+    float xScale, yScale;
 
     public CenterInsideScaleStrategy(Movie movie, int width, int height) {
         super(movie, width, height);
 
         float xScale = ((float)width) / movie.width();
         float yScale = ((float)height) / movie.height();
+        setScale();
+    }
+
+    public CenterInsideScaleStrategy(Movie movie) {
+        super(movie);
+        setScale();
+    }
+
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        xScale = ((float)width) / movie.width();
+        setScale();
+    }
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        yScale = ((float)height) / movie.height();
+        setScale();
+    }
+
+    private void setScale(){
         scale = Math.min(xScale, yScale);
     }
 
