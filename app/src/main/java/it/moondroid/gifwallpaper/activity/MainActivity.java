@@ -12,6 +12,8 @@ import android.widget.Button;
 
 import com.felipecsl.gifimageview.library.GifImageView;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,29 +21,13 @@ import it.moondroid.gifwallpaper.R;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        try {
-//            InputStream stream = getAssets().open("bootanim-circle.gif");
-//            GifMovieView gifMovieView = (GifMovieView)findViewById(R.id.gifView);
-//            gifMovieView.setMovieStream(stream);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    private static final String TAG = MainActivity.class.getName();
 
-    private static final String TAG = "MainActivity";
     private GifImageView gifImageView;
     private Button btnToggle;
     private Button btnBlur;
 
     private boolean shouldBlur = false;
-    BlurMaskFilter.Blur blur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +56,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         try {
             InputStream inputStream = getResources().getAssets().open("bootanim-circle.gif");
-
-        }catch (IOException e){
-
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            gifImageView.setBytes(bytes);
+            gifImageView.startAnimation();
+            Log.d(TAG, "GIF width is " + gifImageView.getGifWidth());
+            Log.d(TAG, "GIF height is " + gifImageView.getGifHeight());
+        } catch (IOException e) {
+            Log.d(TAG, "Could not load asset");
         }
 //        new GifDataDownloader() {
 //            @Override
