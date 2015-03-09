@@ -11,6 +11,10 @@ import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import it.moondroid.gifwallpaper.scaling.CenterCropScaleStrategy;
@@ -42,6 +46,8 @@ public class GIFWallpaperService extends WallpaperService {
             return null;
         }
     }
+
+
 
     private class GIFWallpaperEngine extends Engine
             implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -150,9 +156,14 @@ public class GIFWallpaperService extends WallpaperService {
                     .getString(R.string.preference_key_frames_per_second), "30"));
             frameDuration = (int) ((1.0f / framesPerSecond) * 1000);
 
+            String filePath = sharedPreferences.getString(getResources()
+                    .getString(R.string.preference_key_file_path), "");
+            setMovie(filePath);
+
             String scaleType = sharedPreferences.getString(getResources()
                 .getString(R.string.preference_key_scale_type), "CENTER_CROP");
             scaleStrategy = getScaleStrategy(scaleType);
+
         }
 
 
@@ -186,6 +197,23 @@ public class GIFWallpaperService extends WallpaperService {
             Log.d(TAG, "yScale " + yScale);
             Log.d(TAG, "xTranslation " + xTranslation);
             Log.d(TAG, "yTranslation " + yTranslation);
+        }
+
+        private void setMovie(String filePath){
+            if(!filePath.isEmpty()){
+                //movie = Movie.decodeFile(filePath);
+                Log.d(TAG, "filePath: "+filePath);
+                try {
+                    FileInputStream iStream =  new FileInputStream(filePath);
+                    //byte[] bytes = IOUtils.toByteArray(iStream);
+                    movie = Movie.decodeStream(iStream);
+
+                } catch (FileNotFoundException e) {
+                    Log.w(TAG, "Could not find file");
+                } catch (IOException e) {
+                    Log.w(TAG, "Could not load file");
+                }
+            }
         }
     }
 }

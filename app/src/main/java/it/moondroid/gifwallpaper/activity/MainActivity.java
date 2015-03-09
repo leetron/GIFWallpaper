@@ -1,9 +1,11 @@
 package it.moondroid.gifwallpaper.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -31,6 +33,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private GifImageView gifImageView;
     private Button btnToggle;
     private Button btnBlur;
+    private Button btnSetWallpaper;
+    private String wallpaperFilePath = "";
 
     private boolean shouldBlur = false;
 
@@ -42,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         gifImageView = (GifImageView) findViewById(R.id.gifImageView);
         btnToggle = (Button) findViewById(R.id.btnToggle);
         btnBlur = (Button) findViewById(R.id.btnBlur);
+        btnSetWallpaper = (Button) findViewById(R.id.btnSetWallpaper);
         final Button btnClear = (Button) findViewById(R.id.btnClear);
 
 //        blur = BlurMaskFilter.Blur.newInstance(this);
@@ -57,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         btnToggle.setOnClickListener(this);
         btnClear.setOnClickListener(this);
         btnBlur.setOnClickListener(this);
-
+        btnSetWallpaper.setOnClickListener(this);
 
         try {
             InputStream inputStream = getResources().getAssets().open("bootanim-circle.gif");
@@ -85,15 +90,33 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(final View v) {
-        if (v.equals(btnToggle)) {
-            if (gifImageView.isAnimating())
-                gifImageView.stopAnimation();
-            else
-                gifImageView.startAnimation();
-        } else if (v.equals(btnBlur)) {
-            shouldBlur = !shouldBlur;
-        } else {
-            gifImageView.clear();
+
+        switch (v.getId()){
+            case R.id.btnBlur:
+                shouldBlur = !shouldBlur;
+                break;
+            case R.id.btnToggle:
+                if (gifImageView.isAnimating())
+                    gifImageView.stopAnimation();
+                else
+                    gifImageView.startAnimation();
+                break;
+            case R.id.btnClear:
+                gifImageView.clear();
+                break;
+            case R.id.btnSetWallpaper:
+                setWallpaper();
+                break;
+
+        }
+    }
+
+    private void setWallpaper(){
+        if(!wallpaperFilePath.isEmpty()){
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            sharedPref.edit().putString(getResources()
+                    .getString(R.string.preference_key_file_path), wallpaperFilePath)
+                    .commit();
         }
     }
 
@@ -136,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 byte[] bytes = IOUtils.toByteArray(iStream);
                 gifImageView.setBytes(bytes);
                 gifImageView.startAnimation();
-
+                wallpaperFilePath = filePath;
 
             } catch (FileNotFoundException e) {
                 Log.w(TAG, "Could not find file");
