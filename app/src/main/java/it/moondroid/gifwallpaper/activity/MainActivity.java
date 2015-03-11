@@ -116,7 +116,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             sharedPref.edit().putString(getResources()
                     .getString(R.string.preference_key_file_path), wallpaperFilePath)
-                    .commit();
+                    .apply();
         }
     }
 
