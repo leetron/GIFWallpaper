@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Button btnToggle;
     private Button btnBlur;
     private Button btnSetWallpaper;
+    private Button btnOpenFile;
     private String wallpaperFilePath = "";
 
     private boolean shouldBlur = false;
@@ -47,6 +48,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         btnToggle = (Button) findViewById(R.id.btnToggle);
         btnBlur = (Button) findViewById(R.id.btnBlur);
         btnSetWallpaper = (Button) findViewById(R.id.btnSetWallpaper);
+        btnOpenFile = (Button) findViewById(R.id.btnOpenFile);
+
         final Button btnClear = (Button) findViewById(R.id.btnClear);
 
 //        blur = BlurMaskFilter.Blur.newInstance(this);
@@ -63,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         btnClear.setOnClickListener(this);
         btnBlur.setOnClickListener(this);
         btnSetWallpaper.setOnClickListener(this);
+        btnOpenFile.setOnClickListener(this);
 
         try {
             InputStream inputStream = getResources().getAssets().open("bootanim-circle.gif");
@@ -106,6 +110,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.btnSetWallpaper:
                 setWallpaper();
+                break;
+            case R.id.btnOpenFile:
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("image/gif");
+                Intent intent = Intent.createChooser(chooseFile, "Choose a file");
+                startActivityForResult(intent, 10);
                 break;
 
         }
